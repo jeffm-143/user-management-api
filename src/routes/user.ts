@@ -4,7 +4,7 @@ import { User } from "../entities/User";
 
 const router = Router();
 
-router.post("/users", async (req: Request, res: Response) => {
+router.post("/users", async (req, res) => {
     const { name, email } = req.body;
     try {
         const userRepo = AppDataSource.getRepository(User);
@@ -16,32 +16,43 @@ router.post("/users", async (req: Request, res: Response) => {
     }
 });
 
-router.get("/users", async (req: Request, res: Response) => {
+router.get("/users", async (req, res) => {
     try {
-      const userRepo = AppDataSource.getRepository(User);
-      const users = await userRepo.find();
-      return res.status(200).json(users);
+        const userRepo = AppDataSource.getRepository(User);
+        const users = await userRepo.find();
+        return res.status(200).json(users);
     } catch (error) {
-      return res.status(500).json({ message: "Error retrieving users" });
+        return res.status(500).json({ message: "Error retrieving users" });
     }
-  });
-  
-  router.get("/users/:id", async (req: Request, res: Response) => {
-    const { id } = req.params;
-  
-    try {
-      const userRepo = AppDataSource.getRepository(User);
-      const user = await userRepo.findOneBy({ id: parseInt(id) });
-  
-      if (!user) {
-        return res.status(404).json({ message: "User not found" });
-      }
-  
-      return res.status(200).json(user);
-    } catch (error) {
-      return res.status(500).json({ message: "Error retrieving user" });
-    }
-  });
+});
 
+router.get("/users/:id", async (req, res) => {
+    const { id } = req.params;
+    try {
+        const userRepo = AppDataSource.getRepository(User);
+        const user = await userRepo.findOneBy({ id: parseInt(id) });
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+        return res.status(200).json(user);
+    } catch (error) {
+        return res.status(500).json({ message: "Error retrieving user" });
+    }
+});
+
+router.delete("/users/:id", async (req, res) => {
+    const { id } = req.params;
+    try {
+        const userRepo = AppDataSource.getRepository(User);
+        const user = await userRepo.findOneBy({ id: parseInt(id) });
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+        await userRepo.remove(user);
+        return res.status(200).json({ message: "User deleted successfully" });
+    } catch (error) {
+        return res.status(500).json({ message: "Error deleting user" });
+    }
+});
 
 export default router;
