@@ -8,34 +8,35 @@ const router = Router();
 // Route to create a new user
 router.post("/users", async (req: Request, res: Response) => {
     const { name, email, password } = req.body;
-
+    
     // Validate required fields
     if (!name) {
-        return res.status(400).json({ message: "Name is required" });
+    return res.status(400).json({ message: "Name is required" });
     }
-
+    
     if (!email) {
-        return res.status(400).json({ message: "Email is required" });
+    return res.status(400).json({ message: "Email is required" });
     }
-
+    
     if (!password) {
-        return res.status(400).json({ message: "Password is required" });
+    return res.status(400).json({ message: "Password is required" });
     }
-
+    
     try {
-        // Hash the password before saving to the database
-        const hashedPassword = await bcrypt.hash(password, 10);
-        const userRepo = AppDataSource.getRepository(User);
-
-        const user = userRepo.create({ name, email, password: hashedPassword });
-
-        await userRepo.save(user);
-
-        return res.status(201).json(user);
+    // Hash the password before saving to the database
+    const hashedPassword = await bcrypt.hash(password, 10);
+    
+    const userRepo = AppDataSource.getRepository(User);
+    
+    const user = userRepo.create({ name, email, password: hashedPassword });
+    
+    await userRepo.save(user);
+    
+    return res.status(201).json(user);
     } catch (error) {
-        return res.status(500).json({ message: "Error creating user" });
+    return res.status(500).json({ message: "Error creating user" });
     }
-});
+    });
 
 // Route to retrieve all users
 router.get("/users", async (req: Request, res: Response) => {
