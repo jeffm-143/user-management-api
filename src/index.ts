@@ -6,7 +6,7 @@ import userRoutes from "./routes/user";
 
 const app = express();
 app.use(express.json()); 
-app.use("/users", userRoutes); 
+app.use("/api", userRoutes); 
 
 AppDataSource.initialize()
   .then(() => {
@@ -19,3 +19,4 @@ AppDataSource.initialize()
   .catch((error) => {
     console.error("Database connection failed:", error);
   });
+
